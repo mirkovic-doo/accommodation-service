@@ -1,10 +1,12 @@
 using AccommodationService.Application.Repositories;
 using AccommodationService.Application.Services;
+using AccommodationService.Authorization;
 using AccommodationService.Configuration;
 using AccommodationService.Infrastructure;
 using AccommodationService.Infrastructure.Repositories;
 using AccommodationService.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
@@ -78,6 +80,9 @@ builder.Services.AddRouting(options =>
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+
+builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 
 var app = builder.Build();
 
