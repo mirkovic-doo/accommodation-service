@@ -1,4 +1,5 @@
 ﻿using AccommodationService.Application.Services;
+using AccommodationService.Authorization;
 using AccommodationService.Controllers.Property.Requests;
 using AccommodationService.Controllers.Property.Responses;
 using AutoMapper;
@@ -25,6 +26,7 @@ public class PropertyController : ControllerBase
         this.propertyService = propertyService;
     }
 
+    [Authorize(nameof(AuthorizationLevel.Host))]
     [HttpPost(Name = nameof(CreateProperty))]
     [ProducesResponseType(typeof(PropertyResponse), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateProperty([FromBody] PropertyRequest request)
