@@ -5,6 +5,8 @@ using AccommodationService.Configuration;
 using AccommodationService.Infrastructure;
 using AccommodationService.Infrastructure.Repositories;
 using AccommodationService.Infrastructure.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +85,9 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 
 builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
