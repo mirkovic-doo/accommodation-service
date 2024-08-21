@@ -8,7 +8,7 @@ public interface IPropertyService
 
     Task<Property> GetAsync(Guid id);
 
-    void Delete(Guid id);
+    Task Delete(Guid id);
 
-    Property Update(Property property);
+    Task<Property> Update(Property property);
 }
