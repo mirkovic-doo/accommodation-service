@@ -47,18 +47,18 @@ public class PropertyController : ControllerBase
 
     [HttpPut(Name = nameof(UpdateProperty))]
     [ProducesResponseType(typeof(PropertyResponse), StatusCodes.Status200OK)]
-    public IActionResult UpdateProperty([FromBody] PropertyRequest request)
+    public async Task<IActionResult> UpdateProperty([FromBody] PropertyRequest request)
     {
-        var property = propertyService.Update(mapper.Map<PropertyEntity>(request));
+        var property = await propertyService.Update(mapper.Map<PropertyEntity>(request));
 
         return Ok(mapper.Map<PropertyResponse>(property));
     }
 
     [HttpDelete("{id}", Name = nameof(DeleteProperty))]
-    [ProducesResponseType(typeof(PropertyResponse), StatusCodes.Status200OK)]
-    public IActionResult DeleteProperty([FromRoute] Guid id)
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteProperty([FromRoute] Guid id)
     {
-        propertyService.Delete(id);
+        await propertyService.Delete(id);
 
         return Ok("Property deleted successfully");
     }
