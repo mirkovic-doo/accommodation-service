@@ -29,18 +29,19 @@ public class PropertyService : IPropertyService
         return await propertyRepository.GetAsync(id);
     }
 
-    public async void Delete(Guid id)
+    public async Task Delete(Guid id)
     {
         var property = await propertyRepository.GetAsync(id);
         propertyRepository.Delete(property);
     }
 
-    public Property Update(Property property)
+    public async Task<Property> Update(Property property)
     {
         if (property.MinGuests > property.MaxGuests)
         {
             throw new BadHttpRequestException("Minimum number of guests must be less than or equal to maximum number of guests.");
         }
-        return propertyRepository.Update(property);
+        var updatedProperty = propertyRepository.Update(property);
+        return await Task.FromResult(updatedProperty);
     }
 }
