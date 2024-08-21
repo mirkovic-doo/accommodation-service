@@ -42,6 +42,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IE
     public void Delete(T entity)
     {
         dbContext.Remove(entity);
+        SaveChanges();
     }
 
     protected async Task SaveChangesAsync()

@@ -16,7 +16,23 @@ public class PropertyService : IPropertyService
     public async Task<Property> CreateAsync(Property property)
     {
         var createdProperty = await propertyRepository.AddAsync(property);
-
         return createdProperty;
+    }
+
+    public async Task<Property> GetAsync(Guid id)
+    {
+        return await propertyRepository.GetAsync(id);
+    }
+
+    public async Task Delete(Guid id)
+    {
+        var property = await propertyRepository.GetAsync(id);
+        propertyRepository.Delete(property);
+    }
+
+    public async Task<Property> Update(Property property)
+    {
+        var updatedProperty = propertyRepository.Update(property);
+        return await Task.FromResult(updatedProperty);
     }
 }
