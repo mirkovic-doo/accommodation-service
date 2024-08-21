@@ -15,12 +15,7 @@ public class PropertyService : IPropertyService
 
     public async Task<Property> CreateAsync(Property property)
     {
-        if (property.MinGuests > property.MaxGuests)
-        {
-            throw new BadHttpRequestException("Minimum number of guests must be less than or equal to maximum number of guests.");
-        }
         var createdProperty = await propertyRepository.AddAsync(property);
-
         return createdProperty;
     }
 
@@ -37,10 +32,6 @@ public class PropertyService : IPropertyService
 
     public async Task<Property> Update(Property property)
     {
-        if (property.MinGuests > property.MaxGuests)
-        {
-            throw new BadHttpRequestException("Minimum number of guests must be less than or equal to maximum number of guests.");
-        }
         var updatedProperty = propertyRepository.Update(property);
         return await Task.FromResult(updatedProperty);
     }
