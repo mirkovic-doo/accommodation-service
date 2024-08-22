@@ -17,4 +17,12 @@ public class AvailabilityPeriodRepository : BaseRepository<AvailabilityPeriod>, 
     {
         return await dbContext.Set<AvailabilityPeriod>().Where(ap => ap.PropertyId == propertyId).ToListAsync();
     }
+
+    public async Task<AvailabilityPeriod?> FindClosestStartDateAsync(Guid propertyId, DateTime startDate)
+    {
+        return await dbContext.Set<AvailabilityPeriod>()
+            .Where(ap => ap.PropertyId == propertyId && ap.StartDate <= startDate)
+            .OrderByDescending(ap => ap.StartDate)
+            .FirstOrDefaultAsync();
+    }
 }
