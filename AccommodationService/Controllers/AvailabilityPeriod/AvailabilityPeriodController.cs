@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AvailabilityPeriodEntity = AccommodationService.Domain.AvailabilityPeriod;
 
-namespace AccommodationService.Controllers.Property;
+namespace AccommodationService.Controllers.AvailabilityPeriod;
 
 [Authorize]
 [ApiController]
