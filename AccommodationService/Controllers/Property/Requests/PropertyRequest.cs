@@ -1,4 +1,6 @@
-﻿namespace AccommodationService.Controllers.Property.Requests;
+﻿using AccommodationService.Contracts.Enums;
+
+namespace AccommodationService.Controllers.Property.Requests;
 
 public record PropertyRequest
 {
@@ -9,4 +11,5 @@ public record PropertyRequest
     public required IEnumerable<string> Photos { get; set; }
     public required int MinGuests { get; set; }
     public required int MaxGuests { get; set; }
+    public required PricingOption PricingOption { get; set; }
 }

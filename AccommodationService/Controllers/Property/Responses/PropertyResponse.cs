@@ -1,4 +1,6 @@
-﻿namespace AccommodationService.Controllers.Property.Responses;
+﻿using AccommodationService.Contracts.Enums;
+
+namespace AccommodationService.Controllers.Property.Responses;
 
 public record PropertyResponse
 {
@@ -9,4 +11,5 @@ public record PropertyResponse
     public IEnumerable<string>? Photos { get; set; }
     public int MinGuests { get; set; }
     public int MaxGuests { get; set; }
+    public PricingOption PricingOption { get; set; }
 }
