@@ -1,4 +1,5 @@
 ﻿using AccommodationService.Domain.Base;
+using AccommodationService.Domain.Enums;
 
 namespace AccommodationService.Domain;
 
@@ -10,6 +11,7 @@ public class Property : Entity, IEntity
         Location = string.Empty;
         Amenities = new List<string>();
         Photos = new List<string>();
+        AvailabilityPeriods = new List<AvailabilityPeriod>();
     }
 
     public Property(
@@ -18,7 +20,9 @@ public class Property : Entity, IEntity
         IList<string> amenities,
         IList<string>? photos,
         int minGuests,
-        int maxGuests)
+        int maxGuests,
+        PricingOption pricingOption,
+        IList<AvailabilityPeriod> availabilityPeriods)
     {
         Name = name;
         Location = location;
@@ -26,6 +30,8 @@ public class Property : Entity, IEntity
         Photos = photos;
         MinGuests = minGuests;
         MaxGuests = maxGuests;
+        PricingOption = pricingOption;
+        AvailabilityPeriods = availabilityPeriods;
     }
 
     public string Name { get; set; }
@@ -34,5 +40,7 @@ public class Property : Entity, IEntity
     public IList<string>? Photos { get; set; }
     public int MinGuests { get; set; }
     public int MaxGuests { get; set; }
+    public PricingOption PricingOption { get; set; }
+    public IList<AvailabilityPeriod> AvailabilityPeriods { get; set; }
 
 }

@@ -24,13 +24,13 @@ public class PropertyService : IPropertyService
         return await propertyRepository.GetAsync(id);
     }
 
-    public async Task Delete(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         var property = await propertyRepository.GetAsync(id);
         propertyRepository.Delete(property);
     }
 
-    public async Task<Property> Update(Property property)
+    public async Task<Property> UpdateAsync(Property property)
     {
         var updatedProperty = propertyRepository.Update(property);
         return await Task.FromResult(updatedProperty);
