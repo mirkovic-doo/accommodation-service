@@ -80,8 +80,10 @@ builder.Services.AddRouting(options =>
 
 
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IAvailabilityPeriodService, AvailabilityPeriodService>();
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IAvailabilityPeriodRepository, AvailabilityPeriodRepository>();
 
 builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
