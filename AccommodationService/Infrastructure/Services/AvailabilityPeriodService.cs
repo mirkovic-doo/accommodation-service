@@ -15,12 +15,12 @@ public class AvailabilityPeriodService : IAvailabilityPeriodService
 
     public async Task<AvailabilityPeriod> CreateAsync(AvailabilityPeriod availabilityPeriod)
     {
-        var closestAvailabilityPeriod = await availabilityPeriodRepository
-            .FindClosestStartDateAsync(availabilityPeriod.PropertyId, availabilityPeriod.StartDate);
+        var overlappingPeriods = await availabilityPeriodRepository
+            .GetOverlappingPeriodsAsync(availabilityPeriod.PropertyId, availabilityPeriod.StartDate, availabilityPeriod.EndDate);
 
-        if (closestAvailabilityPeriod != null && closestAvailabilityPeriod.EndDate >= availabilityPeriod.StartDate)
+        if (overlappingPeriods.Any())
         {
-            throw new Exception("The availability period overlaps with an existing period.");
+            throw new Exception("The new availability period overlaps with an existing one.");
         }
         var createdAvailabilityPeriod = await availabilityPeriodRepository.AddAsync(availabilityPeriod);
         return createdAvailabilityPeriod;

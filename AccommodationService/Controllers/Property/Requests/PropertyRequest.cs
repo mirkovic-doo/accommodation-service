@@ -1,4 +1,4 @@
-﻿using AccommodationService.Contracts.Enums;
+﻿using AccommodationService.Domain.Enums;
 
 namespace AccommodationService.Controllers.Property.Requests;
 

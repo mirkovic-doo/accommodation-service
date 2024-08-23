@@ -1,5 +1,5 @@
-﻿using AccommodationService.Contracts.Enums;
-using AccommodationService.Domain.Base;
+﻿using AccommodationService.Domain.Base;
+using AccommodationService.Domain.Enums;
 
 namespace AccommodationService.Domain;
 

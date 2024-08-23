@@ -18,11 +18,17 @@ public class AvailabilityPeriodRepository : BaseRepository<AvailabilityPeriod>, 
         return await dbContext.Set<AvailabilityPeriod>().Where(ap => ap.PropertyId == propertyId).ToListAsync();
     }
 
-    public async Task<AvailabilityPeriod?> FindClosestStartDateAsync(Guid propertyId, DateTime startDate)
+    public async Task<IEnumerable<AvailabilityPeriod>> GetOverlappingPeriodsAsync(Guid propertyId, DateTime startDate, DateTime endDate)
     {
         return await dbContext.Set<AvailabilityPeriod>()
-            .Where(ap => ap.PropertyId == propertyId && ap.StartDate <= startDate)
-            .OrderByDescending(ap => ap.StartDate)
-            .FirstOrDefaultAsync();
+        .Where(ap => ap.PropertyId == propertyId &&
+            (
+                (startDate >= ap.StartDate && endDate <= ap.EndDate) ||  // Completely inside
+                (startDate >= ap.StartDate && startDate <= ap.EndDate) ||  // Starts inside
+                (endDate >= ap.StartDate && endDate <= ap.EndDate) ||  // Ends inside
+                (startDate <= ap.StartDate && endDate >= ap.EndDate)  // Completely hugs
+            )
+        )
+        .ToListAsync();
     }
 }

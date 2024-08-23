@@ -1,4 +1,4 @@
-﻿namespace AccommodationService.Contracts.Enums;
+﻿namespace AccommodationService.Domain.Enums;
 
 public enum PricingOption
 {
