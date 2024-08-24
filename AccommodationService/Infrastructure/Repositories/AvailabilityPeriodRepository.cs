@@ -18,7 +18,7 @@ public class AvailabilityPeriodRepository : BaseRepository<AvailabilityPeriod>, 
         return await dbContext.Set<AvailabilityPeriod>().Where(ap => ap.PropertyId == propertyId).ToListAsync();
     }
 
-    public async Task<IEnumerable<AvailabilityPeriod>> GetOverlappingPeriodsAsync(Guid propertyId, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<AvailabilityPeriod>> GetOverlappingPeriodsAsync(Guid propertyId, DateOnly startDate, DateOnly endDate)
     {
         return await dbContext.Set<AvailabilityPeriod>()
         .Where(ap => ap.PropertyId == propertyId &&
