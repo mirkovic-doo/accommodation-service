@@ -22,9 +22,9 @@ public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Prop
                     p.MaxGuests >= guests &&
                     p.AvailabilityPeriods.Any(
                         ap =>
-                        ap.StartDate <= startDate &&
-                        ap.EndDate >= endDate)
-                    )
+                        (ap.StartDate <= startDate && ap.EndDate >= startDate) ||
+                        (ap.StartDate <= endDate && ap.EndDate >= endDate)
+                    ))
         .ToListAsync();
     }
 }

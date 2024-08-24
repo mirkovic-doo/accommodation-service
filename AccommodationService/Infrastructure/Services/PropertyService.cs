@@ -60,23 +60,38 @@ public class PropertyService : IPropertyService
         var searchPropertyResponses = new List<SearchPropertyResponse>();
         foreach (var property in properties)
         {
-            var relevantPeriods = property.AvailabilityPeriods
-            .Where(ap => ap.StartDate <= startDate && ap.EndDate >= endDate)
-            .ToList();
+            decimal totalPrice = 0;
+            var days = endDate.DayNumber - startDate.DayNumber + 1;
 
+            // TODO: Add logic when there are reservations in the period
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                var applicablePeriod = property.AvailabilityPeriods.FirstOrDefault(ap => ap.StartDate <= date && ap.EndDate >= date);
 
-            if (relevantPeriods.Count == 0) continue;
+                if (applicablePeriod != null)
+                {
+                    totalPrice += applicablePeriod.PricePerDay;
+                }
+                else
+                {
+                    // If any day within the range is not available, skip this property.
+                    totalPrice = 0;
+                    break;
+                }
+            }
 
-            var totalPrice = relevantPeriods.Sum(ap => ap.PricePerDay * (endDate.DayNumber - startDate.DayNumber));
-            var unitPrice = property.PricingOption == PricingOption.PerGuest
-                            ? totalPrice / guests
-                            : totalPrice / (endDate.DayNumber - startDate.DayNumber);
+            if (totalPrice > 0)
+            {
+                var unitPrice = property.PricingOption == PricingOption.PerGuest
+                                ? totalPrice / guests / days
+                                : totalPrice / days;
 
-            var searchPropertyResponse = mapper.Map<SearchPropertyResponse>(property);
-            searchPropertyResponse.UnitPrice = Math.Round(unitPrice, 2);
-            searchPropertyResponse.TotalPrice = Math.Round(totalPrice, 2);
+                var searchPropertyResponse = mapper.Map<SearchPropertyResponse>(property);
+                searchPropertyResponse.UnitPrice = Math.Round(unitPrice, 2);
+                searchPropertyResponse.TotalPrice = Math.Round(totalPrice, 2);
 
-            searchPropertyResponses.Add(searchPropertyResponse);
+                searchPropertyResponses.Add(searchPropertyResponse);
+            }
         }
         return searchPropertyResponses;
     }
