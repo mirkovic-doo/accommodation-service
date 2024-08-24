@@ -11,5 +11,8 @@ public class PropertyProfile : Profile
     {
         CreateMap<PropertyRequest, Property>();
         CreateMap<Property, PropertyResponse>();
+        CreateMap<Property, SearchPropertyResponse>()
+            .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
+            .ForMember(dest => dest.UnitPrice, opt => opt.Ignore());
     }
 }

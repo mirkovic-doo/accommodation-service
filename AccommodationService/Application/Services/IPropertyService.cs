@@ -1,4 +1,5 @@
-﻿using AccommodationService.Domain;
+﻿using AccommodationService.Controllers.Property.Responses;
+using AccommodationService.Domain;
 
 namespace AccommodationService.Application.Services;
 
@@ -11,4 +12,6 @@ public interface IPropertyService
     Task DeleteAsync(Guid id);
 
     Task<Property> UpdateAsync(Property property);
+
+    Task<IEnumerable<SearchPropertyResponse>> SearchPropertiesAsync(string location, int guests, string startDate, string endDate);
 }

@@ -64,4 +64,17 @@ public class PropertyController : ControllerBase
 
         return Ok("Property deleted successfully");
     }
+
+    [HttpGet("search", Name = nameof(SearchProperties))]
+    [ProducesResponseType(typeof(IEnumerable<SearchPropertyResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SearchProperties(
+        [FromQuery] string location,
+        [FromQuery] int guests,
+        [FromQuery] string startDate,
+        [FromQuery] string endDate)
+    {
+        var propertyResponses = await propertyService.SearchPropertiesAsync(location, guests, startDate, endDate);
+
+        return Ok(propertyResponses);
+    }
 }
