@@ -13,7 +13,7 @@ public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Prop
         this.dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Property>> SearchPropertiesAsync(string location, int guests, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Property>> SearchPropertiesAsync(string location, int guests, DateOnly startDate, DateOnly endDate)
     {
         return await dbContext.Set<Property>()
         .Include(p => p.AvailabilityPeriods)
@@ -22,8 +22,8 @@ public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Prop
                     p.MaxGuests >= guests &&
                     p.AvailabilityPeriods.Any(
                         ap =>
-                        ap.StartDate.ToUniversalTime() <= startDate.ToUniversalTime() &&
-                        ap.EndDate.ToUniversalTime() >= endDate.ToUniversalTime())
+                        ap.StartDate <= startDate &&
+                        ap.EndDate >= endDate)
                     )
         .ToListAsync();
     }

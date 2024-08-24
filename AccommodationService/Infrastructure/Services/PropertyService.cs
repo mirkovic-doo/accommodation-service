@@ -44,8 +44,8 @@ public class PropertyService : IPropertyService
     public async Task<IEnumerable<SearchPropertyResponse>> SearchPropertiesAsync(
         string location, int guests, string startDate, string endDate)
     {
-        if (!DateTime.TryParse(startDate, out var parsedStartDate) ||
-        !DateTime.TryParse(endDate, out var parsedEndDate))
+        if (!DateOnly.TryParse(startDate, out var parsedStartDate) ||
+        !DateOnly.TryParse(endDate, out var parsedEndDate))
         {
             throw new Exception("Invalid date format.");
         }
@@ -55,7 +55,7 @@ public class PropertyService : IPropertyService
     }
 
     private IEnumerable<SearchPropertyResponse> CalculatePrices(
-        IEnumerable<Property> properties, int guests, DateTime startDate, DateTime endDate)
+        IEnumerable<Property> properties, int guests, DateOnly startDate, DateOnly endDate)
     {
         var searchPropertyResponses = new List<SearchPropertyResponse>();
         foreach (var property in properties)
@@ -64,12 +64,13 @@ public class PropertyService : IPropertyService
             .Where(ap => ap.StartDate <= startDate && ap.EndDate >= endDate)
             .ToList();
 
+
             if (relevantPeriods.Count == 0) continue;
 
-            var totalPrice = relevantPeriods.Sum(ap => ap.PricePerDay * (endDate - startDate).Days);
+            var totalPrice = relevantPeriods.Sum(ap => ap.PricePerDay * (endDate.DayNumber - startDate.DayNumber));
             var unitPrice = property.PricingOption == PricingOption.PerGuest
                             ? totalPrice / guests
-                            : totalPrice / (endDate - startDate).Days;
+                            : totalPrice / (endDate.DayNumber - startDate.DayNumber);
 
             var searchPropertyResponse = mapper.Map<SearchPropertyResponse>(property);
             searchPropertyResponse.UnitPrice = Math.Round(unitPrice, 2);
