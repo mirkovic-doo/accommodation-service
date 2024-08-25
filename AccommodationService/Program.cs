@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Serilog;
 
 var AllowAllOrigins = "_AllowAllOrigins";
 
@@ -44,6 +45,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
+builder.Host.UseSerilog((context, loggerConfig) =>
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
+
 var firebaseProjectId = builder.Configuration["FirebaseAuthClientConfig:ProjectId"];
 
 var tokenValidationParameters = new TokenValidationParameters
@@ -71,6 +75,11 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+if (!string.IsNullOrWhiteSpace(builder.Configuration.GetSection("ElasticApm").GetValue<string>("ServerCert")))
+{
+    builder.Services.AddElasticApm();
+}
 
 builder.Services.AddRouting(options =>
 {
@@ -104,7 +113,8 @@ app.UseSwagger((opt) =>
     opt.RouteTemplate = "swagger/{documentName}/swagger.json";
 });
 app.UseSwaggerUI();
-
+app.UseMiddleware<RequestContextLoggingMiddleware>();
+app.UseSerilogRequestLogging();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
