@@ -396,5 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/AccommodationService/.idea/*
 
 AccommodationService/appsettings.Development.json
