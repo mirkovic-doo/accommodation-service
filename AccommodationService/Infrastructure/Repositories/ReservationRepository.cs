@@ -28,6 +28,14 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Reservation>> GetGuestReservationsAsync(Guid guestId)
+    {
+        return await dbContext.Reservations
+            .Where(r => r.CreatedById == guestId &&
+            (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.Confirmed))
+            .ToListAsync();
+    }
+
     public async Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId)
     {
         return await dbContext.Reservations

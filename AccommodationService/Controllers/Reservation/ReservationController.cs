@@ -75,9 +75,9 @@ public class ReservationController : ControllerBase
     }
 
     [Authorize(nameof(AuthorizationLevel.Guest))]
-    [HttpDelete("cancel/guest", Name = nameof(CancelReservationGuest))]
+    [HttpDelete("{id}/cancel/guest", Name = nameof(CancelReservationGuest))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CancelReservationGuest([FromQuery] Guid id)
+    public async Task<IActionResult> CancelReservationGuest([FromRoute] Guid id)
     {
         await reservationService.CancelReservationGuestAsync(id);
 
@@ -85,9 +85,9 @@ public class ReservationController : ControllerBase
     }
 
     [Authorize(nameof(AuthorizationLevel.Guest))]
-    [HttpDelete("cancel/host", Name = nameof(CancelReservationHost))]
+    [HttpDelete("{id}/cancel/host", Name = nameof(CancelReservationHost))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CancelReservationHost([FromQuery] Guid id)
+    public async Task<IActionResult> CancelReservationHost([FromRoute] Guid id)
     {
         await reservationService.CancelReservationHostAsync(id);
 
@@ -102,5 +102,15 @@ public class ReservationController : ControllerBase
         var num = await reservationService.GetNumberOfCancelledReservationsAsync(guestId);
 
         return Ok(new { canceledNum = num });
+    }
+
+    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [HttpGet("guest/{guestId}", Name = nameof(GetGuestReservations))]
+    [ProducesResponseType(typeof(IEnumerable<ReservationResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGuestReservations([FromRoute] Guid guestId)
+    {
+        var reservations = await reservationService.GetGuestReservationsAsync(guestId);
+
+        return Ok(mapper.Map<IEnumerable<ReservationResponse>>(reservations));
     }
 }

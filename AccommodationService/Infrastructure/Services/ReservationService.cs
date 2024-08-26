@@ -73,8 +73,11 @@ public class ReservationService : IReservationService
             totalPrice += applicablePeriod.PricePerDay;
         }
         reservation.Price = totalPrice;
-        reservation.Status = property.AutoConfirmReservation ? ReservationStatus.Confirmed : ReservationStatus.Pending;
         var createdReservation = await reservationRepository.AddAsync(reservation);
+        if (property.AutoConfirmReservation)
+        {
+            await ConfirmReservationAsync(createdReservation.Id);
+        }
         return createdReservation;
     }
 
@@ -97,6 +100,11 @@ public class ReservationService : IReservationService
     public async Task<Reservation> GetAsync(Guid id)
     {
         return await reservationRepository.GetAsync(id);
+    }
+
+    public async Task<IEnumerable<Reservation>> GetGuestReservationsAsync(Guid guestId)
+    {
+        return await reservationRepository.GetGuestReservationsAsync(guestId);
     }
 
     public async Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId)
