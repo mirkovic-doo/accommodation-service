@@ -16,14 +16,41 @@ public class ReservationService : IReservationService
         this.propertyRepository = propertyRepository;
     }
 
-    public async Task CancelReservationAsync(Guid id)
+    public async Task CancelReservationGuestAsync(Guid id)
     {
         var reservation = await reservationRepository.GetAsync(id);
         if (reservation.Status != ReservationStatus.Confirmed) throw new Exception("Reservation is not confirmed, therefore it can not be canceled");
         if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
 
-        reservation.Status = ReservationStatus.Cancelled;
+        reservation.Status = ReservationStatus.GuestCancelled;
         reservationRepository.Update(reservation);
+    }
+
+    public async Task CancelReservationHostAsync(Guid id)
+    {
+        var reservation = await reservationRepository.GetAsync(id);
+        if (reservation.Status != ReservationStatus.Pending) throw new Exception("Reservation is already confirmed or canceled");
+        if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
+
+        reservation.Status = ReservationStatus.HostCancelled;
+        reservationRepository.Update(reservation);
+    }
+
+    public async Task ConfirmReservationAsync(Guid id)
+    {
+        var reservation = await reservationRepository.GetAsync(id);
+        if (reservation.Status != ReservationStatus.Pending) throw new Exception("Reservation is already confirmed or canceled");
+        if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
+
+        reservation.Status = ReservationStatus.Confirmed;
+        var otherReservations = await reservationRepository.GetAllPendingCorrelated(reservation);
+        foreach (var otherReservation in otherReservations)
+        {
+            otherReservation.Status = ReservationStatus.HostCancelled;
+        }
+
+        reservationRepository.Update(reservation);
+        reservationRepository.UpdateRange(otherReservations);
     }
 
     public async Task<Reservation> CreateAsync(Reservation reservation)
@@ -46,6 +73,7 @@ public class ReservationService : IReservationService
             totalPrice += applicablePeriod.PricePerDay;
         }
         reservation.Price = totalPrice;
+        reservation.Status = property.AutoConfirmReservation ? ReservationStatus.Confirmed : ReservationStatus.Pending;
         var createdReservation = await reservationRepository.AddAsync(reservation);
         return createdReservation;
     }

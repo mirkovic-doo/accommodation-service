@@ -45,6 +45,12 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IE
         SaveChanges();
     }
 
+    public void UpdateRange(IEnumerable<T> entities)
+    {
+        dbContext.Set<T>().UpdateRange(entities);
+        dbContext.SaveChanges();
+    }
+
     public async Task<IEnumerable<T>> GetAllAsync()
     {
         return await dbContext.Set<T>().ToListAsync();

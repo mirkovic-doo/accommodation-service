@@ -1,5 +1,6 @@
 ﻿using AccommodationService.Application.Repositories;
 using AccommodationService.Domain;
+using AccommodationService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccommodationService.Infrastructure.Repositories;
@@ -15,6 +16,15 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
 
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)
     {
-        return await dbContext.Reservations.Where(ap => ap.PropertyId == propertyId).ToListAsync();
+        return await dbContext.Reservations.Where(r => r.PropertyId == propertyId).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Reservation>> GetAllPendingCorrelated(Reservation reservation)
+    {
+        return await dbContext.Reservations
+            .Where(r => r.Status == ReservationStatus.Pending &&
+            (r.StartDate <= reservation.StartDate && r.EndDate >= reservation.StartDate) ||
+            (r.StartDate <= reservation.EndDate && r.EndDate >= reservation.EndDate))
+            .ToListAsync();
     }
 }

@@ -12,5 +12,10 @@ public interface IReservationService
 
     Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId);
 
-    Task CancelReservationAsync(Guid id);
+    Task ConfirmReservationAsync(Guid id);
+
+    Task CancelReservationGuestAsync(Guid id);
+
+    Task CancelReservationHostAsync(Guid id);
+
 }

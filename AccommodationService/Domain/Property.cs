@@ -46,5 +46,6 @@ public class Property : Entity, IEntity
     public PricingOption PricingOption { get; set; }
     public IList<AvailabilityPeriod> AvailabilityPeriods { get; set; }
     public IList<Reservation> Reservations { get; set; }
+    public bool AutoConfirmReservation { get; set; }
 
 }

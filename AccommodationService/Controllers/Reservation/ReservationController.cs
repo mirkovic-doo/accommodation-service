@@ -64,13 +64,34 @@ public class ReservationController : ControllerBase
         return Ok(mapper.Map<IEnumerable<ReservationResponse>>(reservations));
     }
 
-    [Authorize(nameof(AuthorizationLevel.Guest))]
-    [HttpGet("cancel/{id}", Name = nameof(CancelReservation))]
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpGet("confirm/{id}", Name = nameof(ConfirmReservation))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CancelReservation([FromRoute] Guid id)
+    public async Task<IActionResult> ConfirmReservation([FromRoute] Guid id)
     {
-        await reservationService.CancelReservationAsync(id);
+        await reservationService.ConfirmReservationAsync(id);
+
+        return Ok("Reservation confirmed successfully");
+    }
+
+    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [HttpDelete("cancel/guest", Name = nameof(CancelReservationGuest))]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CancelReservationGuest([FromQuery] Guid id)
+    {
+        await reservationService.CancelReservationGuestAsync(id);
 
         return Ok("Reservation canceled successfully");
     }
+
+    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [HttpDelete("cancel/host", Name = nameof(CancelReservationHost))]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CancelReservationHost([FromQuery] Guid id)
+    {
+        await reservationService.CancelReservationHostAsync(id);
+
+        return Ok("Reservation canceled successfully");
+    }
+
 }
