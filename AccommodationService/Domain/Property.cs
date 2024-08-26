@@ -12,6 +12,7 @@ public class Property : Entity, IEntity
         Amenities = new List<string>();
         Photos = new List<string>();
         AvailabilityPeriods = new List<AvailabilityPeriod>();
+        Reservations = new List<Reservation>();
     }
 
     public Property(
@@ -22,7 +23,8 @@ public class Property : Entity, IEntity
         int minGuests,
         int maxGuests,
         PricingOption pricingOption,
-        IList<AvailabilityPeriod> availabilityPeriods)
+        IList<AvailabilityPeriod> availabilityPeriods,
+        IList<Reservation> reservations)
     {
         Name = name;
         Location = location;
@@ -32,6 +34,7 @@ public class Property : Entity, IEntity
         MaxGuests = maxGuests;
         PricingOption = pricingOption;
         AvailabilityPeriods = availabilityPeriods;
+        Reservations = reservations;
     }
 
     public string Name { get; set; }
@@ -42,5 +45,7 @@ public class Property : Entity, IEntity
     public int MaxGuests { get; set; }
     public PricingOption PricingOption { get; set; }
     public IList<AvailabilityPeriod> AvailabilityPeriods { get; set; }
+    public IList<Reservation> Reservations { get; set; }
+    public bool AutoConfirmReservation { get; set; }
 
 }
