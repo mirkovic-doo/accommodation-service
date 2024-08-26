@@ -1,5 +1,6 @@
 ﻿using AccommodationService.Application.Repositories;
 using AccommodationService.Application.Services;
+using AccommodationService.Controllers.Property.Requests;
 using AccommodationService.Controllers.Property.Responses;
 using AccommodationService.Domain;
 using AccommodationService.Domain.Enums;
@@ -35,23 +36,25 @@ public class PropertyService : IPropertyService
         propertyRepository.Delete(property);
     }
 
-    public async Task<Property> UpdateAsync(Property property)
+    public async Task<Property> UpdateAsync(PropertyRequest request)
     {
-        var updatedProperty = propertyRepository.Update(property);
-        return await Task.FromResult(updatedProperty);
+        if (request.Id == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
+
+        var property = await propertyRepository.GetMyByIdAsync((Guid)request.Id);
+
+        mapper.Map(request, property);
+
+        return propertyRepository.Update(property);
     }
 
     public async Task<IEnumerable<SearchPropertyResponse>> SearchPropertiesAsync(
-        string location, int guests, string startDate, string endDate)
+        string location, int guests, DateOnly startDate, DateOnly endDate)
     {
-        if (!DateOnly.TryParse(startDate, out var parsedStartDate) ||
-        !DateOnly.TryParse(endDate, out var parsedEndDate))
-        {
-            throw new Exception("Invalid date format.");
-        }
-
-        var properties = await propertyRepository.SearchPropertiesAsync(location, guests, parsedStartDate, parsedEndDate);
-        return CalculatePrices(properties, guests, parsedStartDate, parsedEndDate);
+        var properties = await propertyRepository.SearchPropertiesAsync(location, guests, startDate, endDate);
+        return CalculatePrices(properties, guests, startDate, endDate);
     }
 
     private IEnumerable<SearchPropertyResponse> CalculatePrices(
@@ -94,5 +97,10 @@ public class PropertyService : IPropertyService
             }
         }
         return searchPropertyResponses;
+    }
+
+    public async Task<IEnumerable<Property>> GetMyAsync()
+    {
+        return await propertyRepository.GetMyAsync();
     }
 }

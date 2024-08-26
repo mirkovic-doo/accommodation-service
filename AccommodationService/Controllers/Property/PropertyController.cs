@@ -50,7 +50,7 @@ public class PropertyController : ControllerBase
     [ProducesResponseType(typeof(PropertyResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateProperty([FromBody] PropertyRequest request)
     {
-        var property = await propertyService.UpdateAsync(mapper.Map<PropertyEntity>(request));
+        var property = await propertyService.UpdateAsync(request);
 
         return Ok(mapper.Map<PropertyResponse>(property));
     }
@@ -65,13 +65,25 @@ public class PropertyController : ControllerBase
         return Ok("Property deleted successfully");
     }
 
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpGet("my", Name = nameof(GetMyProperties))]
+    [ProducesResponseType(typeof(IEnumerable<PropertyResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMyProperties()
+    {
+        var properties = await propertyService.GetMyAsync();
+
+        return Ok(mapper.Map<List<PropertyResponse>>(properties));
+    }
+
+
+    [AllowAnonymous]
     [HttpGet("search", Name = nameof(SearchProperties))]
     [ProducesResponseType(typeof(IEnumerable<SearchPropertyResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchProperties(
         [FromQuery] string location,
         [FromQuery] int guests,
-        [FromQuery] string startDate,
-        [FromQuery] string endDate)
+        [FromQuery] DateOnly startDate,
+        [FromQuery] DateOnly endDate)
     {
         var propertyResponses = await propertyService.SearchPropertiesAsync(location, guests, startDate, endDate);
 
