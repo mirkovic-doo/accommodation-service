@@ -63,4 +63,14 @@ public class ReservationController : ControllerBase
 
         return Ok(mapper.Map<IEnumerable<ReservationResponse>>(reservations));
     }
+
+    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [HttpGet("cancel/{id}", Name = nameof(CancelReservation))]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CancelReservation([FromRoute] Guid id)
+    {
+        await reservationService.CancelReservationAsync(id);
+
+        return Ok("Reservation canceled successfully");
+    }
 }

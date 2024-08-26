@@ -16,6 +16,16 @@ public class ReservationService : IReservationService
         this.propertyRepository = propertyRepository;
     }
 
+    public async Task CancelReservationAsync(Guid id)
+    {
+        var reservation = await reservationRepository.GetAsync(id);
+        if (reservation.Status != ReservationStatus.Confirmed) throw new Exception("Reservation is not confirmed, therefore it can not be canceled");
+        if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
+
+        reservation.Status = ReservationStatus.Cancelled;
+        reservationRepository.Update(reservation);
+    }
+
     public async Task<Reservation> CreateAsync(Reservation reservation)
     {
         decimal totalPrice = 0;
