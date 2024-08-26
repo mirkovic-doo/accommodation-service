@@ -71,16 +71,13 @@ public class PropertyService : IPropertyService
             {
                 var applicablePeriod = property.AvailabilityPeriods.FirstOrDefault(ap => ap.StartDate <= date && ap.EndDate >= date);
 
-                if (applicablePeriod != null)
+                if (applicablePeriod == null)
                 {
-                    totalPrice += applicablePeriod.PricePerDay;
-                }
-                else
-                {
-                    // If any day within the range is not available, skip this property.
                     totalPrice = 0;
                     break;
                 }
+                totalPrice += applicablePeriod.PricePerDay;
+
             }
 
             if (totalPrice > 0)

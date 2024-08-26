@@ -15,12 +15,12 @@ public class AvailabilityPeriodRepository : BaseRepository<AvailabilityPeriod>, 
 
     public async Task<IEnumerable<AvailabilityPeriod>> GetAllByPropertyIdAsync(Guid propertyId)
     {
-        return await dbContext.Set<AvailabilityPeriod>().Where(ap => ap.PropertyId == propertyId).ToListAsync();
+        return await dbContext.AvailabilityPeriods.Where(ap => ap.PropertyId == propertyId).ToListAsync();
     }
 
     public async Task<IEnumerable<AvailabilityPeriod>> GetOverlappingPeriodsAsync(Guid propertyId, DateOnly startDate, DateOnly endDate)
     {
-        return await dbContext.Set<AvailabilityPeriod>()
+        return await dbContext.AvailabilityPeriods
         .Where(ap => ap.PropertyId == propertyId &&
             (
                 (startDate >= ap.StartDate && endDate <= ap.EndDate) ||  // Completely inside

@@ -35,9 +35,9 @@ public class AvailabilityPeriodController : ControllerBase
         return Ok(mapper.Map<AvailabilityPeriodResponse>(availabilityPeriod));
     }
 
-    [HttpGet("property/{propertyId}", Name = nameof(GetAllByPropertyId))]
+    [HttpGet("property/{propertyId}", Name = nameof(GetAvailabilityPeriodsByPropertyId))]
     [ProducesResponseType(typeof(IEnumerable<AvailabilityPeriodResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllByPropertyId([FromRoute] Guid propertyId)
+    public async Task<IActionResult> GetAvailabilityPeriodsByPropertyId([FromRoute] Guid propertyId)
     {
         var availabilityPeriods = await availabilityPeriodService.GetAllByPropertyIdAsync(propertyId);
 

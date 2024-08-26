@@ -13,7 +13,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IE
         this.dbContext = dbContext;
     }
 
-    public async Task<T> GetAsync(Guid id)
+    public virtual async Task<T> GetAsync(Guid id)
     {
         var entity = await dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
 
