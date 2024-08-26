@@ -42,8 +42,12 @@ public class ReservationService : IReservationService
 
     public async Task DeleteAsync(Guid id)
     {
-        var property = await reservationRepository.GetAsync(id);
-        reservationRepository.Delete(property);
+        var reservation = await reservationRepository.GetAsync(id);
+        if (reservation.Status != ReservationStatus.Pending)
+        {
+            throw new Exception("You can only delete reservation request");
+        }
+        reservationRepository.Delete(reservation);
     }
 
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)
