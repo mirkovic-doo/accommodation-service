@@ -13,7 +13,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IE
         this.dbContext = dbContext;
     }
 
-    public async Task<T> GetAsync(Guid id)
+    public virtual async Task<T> GetAsync(Guid id)
     {
         var entity = await dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
 
@@ -43,6 +43,12 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IE
     {
         dbContext.Remove(entity);
         SaveChanges();
+    }
+
+    public void UpdateRange(IEnumerable<T> entities)
+    {
+        dbContext.Set<T>().UpdateRange(entities);
+        dbContext.SaveChanges();
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
