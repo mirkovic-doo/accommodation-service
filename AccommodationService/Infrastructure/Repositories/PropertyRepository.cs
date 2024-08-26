@@ -27,9 +27,24 @@ public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Prop
         return property;
     }
 
+    public override async Task<Property> GetAsync(Guid id)
+    {
+        var entity = await dbContext.Properties
+            .Include(p => p.AvailabilityPeriods)
+            .Include(p => p.Reservations)
+            .SingleOrDefaultAsync(e => e.Id == id);
+
+        if (entity == null)
+        {
+            throw new Exception($"Entity with {id} not found");
+        }
+
+        return entity;
+    }
+
     public async Task<IEnumerable<Property>> SearchPropertiesAsync(string location, int guests, DateOnly startDate, DateOnly endDate)
     {
-        return await dbContext.Set<Property>()
+        return await dbContext.Properties
         .Include(p => p.AvailabilityPeriods)
         .Where(p => p.Location.ToLower().Contains(location.ToLower()) &&
                     p.MinGuests <= guests &&

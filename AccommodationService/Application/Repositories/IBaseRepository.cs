@@ -9,4 +9,5 @@ public interface IBaseRepository<T> where T : class, IEntity, IAuditedEntity
     T Update(T entity);
     void Delete(T entity);
     Task<IEnumerable<T>> GetAllAsync();
+    void UpdateRange(IEnumerable<T> entities);
 }

@@ -70,17 +70,15 @@ public class PropertyService : IPropertyService
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 var applicablePeriod = property.AvailabilityPeriods.FirstOrDefault(ap => ap.StartDate <= date && ap.EndDate >= date);
+                var reservationExists = property.Reservations.Any(r => r.StartDate <= date && r.EndDate >= date && r.Status == ReservationStatus.Confirmed);
 
-                if (applicablePeriod != null)
+                if (applicablePeriod == null || reservationExists)
                 {
-                    totalPrice += applicablePeriod.PricePerDay;
-                }
-                else
-                {
-                    // If any day within the range is not available, skip this property.
                     totalPrice = 0;
                     break;
                 }
+                totalPrice += applicablePeriod.PricePerDay;
+
             }
 
             if (totalPrice > 0)

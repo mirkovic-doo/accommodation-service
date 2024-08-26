@@ -12,4 +12,5 @@ public record PropertyRequest
     public required int MinGuests { get; set; }
     public required int MaxGuests { get; set; }
     public required PricingOption PricingOption { get; set; }
+    public required bool AutoConfirmReservation { get; set; }
 }

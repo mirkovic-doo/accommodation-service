@@ -94,6 +94,9 @@ builder.Services.AddScoped<IAvailabilityPeriodService, AvailabilityPeriodService
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IAvailabilityPeriodRepository, AvailabilityPeriodRepository>();
 
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+
 builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
 
