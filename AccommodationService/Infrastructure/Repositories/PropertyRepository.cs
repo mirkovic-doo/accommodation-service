@@ -6,11 +6,25 @@ namespace AccommodationService.Infrastructure.Repositories;
 
 public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Property>, IPropertyRepository
 {
-    private readonly AccommodationDbContext dbContext;
-
     public PropertyRepository(AccommodationDbContext dbContext) : base(dbContext)
     {
-        this.dbContext = dbContext;
+    }
+
+    public async Task<IEnumerable<Property>> GetMyAsync()
+    {
+        return await dbContext.Properties.Where(p => p.CreatedById == dbContext.CurrentUserId).ToListAsync();
+    }
+
+    public async Task<Property> GetMyByIdAsync(Guid id)
+    {
+        var property = await dbContext.Properties.SingleOrDefaultAsync(p => p.Id == id && p.CreatedById == dbContext.CurrentUserId);
+
+        if (property == null)
+        {
+            throw new Exception("Property not found");
+        }
+
+        return property;
     }
 
     public async Task<IEnumerable<Property>> SearchPropertiesAsync(string location, int guests, DateOnly startDate, DateOnly endDate)
