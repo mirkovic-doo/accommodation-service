@@ -1,6 +1,7 @@
 ﻿using AccommodationService.Application.Repositories;
 using AccommodationService.Application.Services;
 using AccommodationService.Domain;
+using AccommodationService.Domain.Enums;
 
 namespace AccommodationService.Infrastructure.Services;
 
@@ -26,7 +27,8 @@ public class ReservationService : IReservationService
         for (var date = reservation.StartDate; date <= reservation.EndDate; date = date.AddDays(1))
         {
             var applicablePeriod = property.AvailabilityPeriods.FirstOrDefault(ap => ap.StartDate <= date && ap.EndDate >= date);
-            var alreadyExists = property.Reservations.Any(r => r.StartDate <= date && r.EndDate >= date);
+            var alreadyExists = property.Reservations.Any(r => r.StartDate <= date && r.EndDate >= date && r.Status == ReservationStatus.Confirmed);
+
             if (applicablePeriod == null || alreadyExists)
             {
                 throw new Exception("No available periods for this reservation");
