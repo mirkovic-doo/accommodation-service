@@ -98,4 +98,9 @@ public class ReservationService : IReservationService
     {
         return await reservationRepository.GetAsync(id);
     }
+
+    public async Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId)
+    {
+        return await reservationRepository.GetNumberOfCancelledReservationsAsync(guestId);
+    }
 }

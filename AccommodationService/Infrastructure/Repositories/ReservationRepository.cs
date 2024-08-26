@@ -27,4 +27,11 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
             (r.StartDate <= reservation.EndDate && r.EndDate >= reservation.EndDate))
             .ToListAsync();
     }
+
+    public async Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId)
+    {
+        return await dbContext.Reservations
+            .Where(r => r.CreatedById == guestId && r.Status == ReservationStatus.GuestCancelled)
+            .CountAsync();
+    }
 }

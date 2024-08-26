@@ -18,4 +18,6 @@ public interface IReservationService
 
     Task CancelReservationHostAsync(Guid id);
 
+    Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId);
+
 }

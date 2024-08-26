@@ -94,4 +94,13 @@ public class ReservationController : ControllerBase
         return Ok("Reservation canceled successfully");
     }
 
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpGet("cancellednum/guest/{guestId}", Name = nameof(GetNumberOfCancelledReservations))]
+    [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetNumberOfCancelledReservations([FromRoute] Guid guestId)
+    {
+        var num = await reservationService.GetNumberOfCancelledReservationsAsync(guestId);
+
+        return Ok(new { canceledNum = num });
+    }
 }

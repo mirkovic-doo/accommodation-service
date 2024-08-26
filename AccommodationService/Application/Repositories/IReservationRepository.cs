@@ -7,4 +7,6 @@ public interface IReservationRepository : IBaseRepository<Reservation>
     Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId);
 
     Task<IEnumerable<Reservation>> GetAllPendingCorrelated(Reservation reservation);
+
+    Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId);
 }
