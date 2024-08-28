@@ -1,7 +1,9 @@
 ﻿using AccommodationService.Application.Services;
 using AccommodationService.Authorization;
+using AccommodationService.Controllers.AvailabilityPeriod.Responses;
 using AccommodationService.Controllers.Property.Requests;
 using AccommodationService.Controllers.Property.Responses;
+using AccommodationService.Controllers.Reservation.Responses;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,8 @@ public class PropertyController : ControllerBase
 {
     private readonly IMapper mapper;
     private readonly IPropertyService propertyService;
+    private readonly IAvailabilityPeriodService availabilityPeriodService;
+    private readonly IReservationService reservationService;
 
     public PropertyController(
         IMapper mapper,
@@ -98,5 +102,25 @@ public class PropertyController : ControllerBase
         var propertyResponses = await propertyService.SearchPropertiesAsync(location, guests, startDate, endDate);
 
         return Ok(propertyResponses);
+    }
+
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpGet("{id}/availabilityperiod", Name = nameof(GetAvailabilityPeriodsByPropertyId))]
+    [ProducesResponseType(typeof(IEnumerable<AvailabilityPeriodResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAvailabilityPeriodsByPropertyId([FromRoute] Guid id)
+    {
+        var availabilityPeriods = await availabilityPeriodService.GetAllByPropertyIdAsync(id);
+
+        return Ok(mapper.Map<IEnumerable<AvailabilityPeriodResponse>>(availabilityPeriods));
+    }
+
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpGet("{id}/reservation", Name = nameof(GetReservationsByPropertyId))]
+    [ProducesResponseType(typeof(IEnumerable<ReservationResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetReservationsByPropertyId([FromRoute] Guid id)
+    {
+        var reservations = await reservationService.GetAllByPropertyIdAsync(id);
+
+        return Ok(mapper.Map<IEnumerable<ReservationResponse>>(reservations));
     }
 }
