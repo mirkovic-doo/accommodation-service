@@ -2,7 +2,7 @@
 
 namespace AccommodationService.Domain;
 
-public class AvailabilityPeriod : Entity, IEntity
+public class AvailabilityPeriod : Entity, IEntity, IAuditedEntity
 {
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
