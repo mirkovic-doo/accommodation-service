@@ -5,15 +5,16 @@ using AccommodationService.Configuration;
 using AccommodationService.Infrastructure;
 using AccommodationService.Infrastructure.Repositories;
 using AccommodationService.Infrastructure.Services;
+using AccommodationService.Notification;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Serilog;
 
 var AllowAllOrigins = "_AllowAllOrigins";
 
@@ -70,6 +71,7 @@ builder.Services
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<FirebaseAuthClientConfig>(builder.Configuration.GetSection("FirebaseAuthClientConfig"));
+builder.Services.Configure<RabbitMQConfig>(builder.Configuration.GetSection("RabbitMQConfig"));
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -99,6 +101,7 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+builder.Services.AddSingleton<INotificationSenderService, NotificationSenderService>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
