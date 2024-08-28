@@ -113,4 +113,13 @@ public class ReservationController : ControllerBase
 
         return Ok(mapper.Map<IEnumerable<ReservationResponse>>(reservations));
     }
+
+    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [HttpDelete("guest/delete/action/{userId}", Name = nameof(DeleteGuestReservations))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteGuestReservations([FromRoute] Guid userId)
+    {
+        await reservationService.DeleteGuestReservationsAsync(userId);
+        return Ok();
+    }
 }
