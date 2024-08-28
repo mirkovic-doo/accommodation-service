@@ -101,4 +101,21 @@ public class PropertyService : IPropertyService
     {
         return await propertyRepository.GetMyAsync();
     }
+
+    public async Task DeletePropertiesAsync()
+    {
+        var myProperties = await propertyRepository.GetMyAsync();
+
+        var reservations = myProperties.SelectMany(p => p.Reservations).ToList();
+
+        if (reservations.Any(r => r.Status == ReservationStatus.Confirmed && r.EndDate >= DateOnly.FromDateTime(DateTime.UtcNow)))
+        {
+            throw new Exception("You can not delete properties with confirmed reservations");
+        }
+
+        foreach (var property in myProperties)
+        {
+            propertyRepository.Delete(property);
+        }
+    }
 }
