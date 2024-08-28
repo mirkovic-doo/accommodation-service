@@ -42,15 +42,15 @@ public class ReservationService : IReservationService
         if (reservation.Status != ReservationStatus.Pending) throw new Exception("Reservation is already confirmed or canceled");
         if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
 
-        reservation.Status = ReservationStatus.Confirmed;
         var otherReservations = await reservationRepository.GetAllPendingCorrelated(reservation);
         foreach (var otherReservation in otherReservations)
         {
             otherReservation.Status = ReservationStatus.HostCancelled;
         }
-
-        reservationRepository.Update(reservation);
         reservationRepository.UpdateRange(otherReservations);
+
+        reservation.Status = ReservationStatus.Confirmed;
+        reservationRepository.Update(reservation);
     }
 
     public async Task<Reservation> CreateAsync(Reservation reservation)
