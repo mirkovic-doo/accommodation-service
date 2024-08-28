@@ -3,7 +3,7 @@ using AccommodationService.Domain.Enums;
 
 namespace AccommodationService.Domain;
 
-public class Property : Entity, IEntity
+public class Property : Entity, IEntity, IAuditedEntity
 {
     public Property()
     {
@@ -47,5 +47,4 @@ public class Property : Entity, IEntity
     public IList<AvailabilityPeriod> AvailabilityPeriods { get; set; }
     public IList<Reservation> Reservations { get; set; }
     public bool AutoConfirmReservation { get; set; }
-
 }

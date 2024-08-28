@@ -11,4 +11,8 @@ public record ReservationResponse
     public ReservationStatus Status { get; set; }
     public decimal Price { get; set; }
     public Guid PropertyId { get; set; }
+    public Guid CreatedById { get; set; }
+    public Guid UpdatedById { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

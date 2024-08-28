@@ -13,4 +13,8 @@ public record PropertyResponse
     public int MaxGuests { get; set; }
     public PricingOption PricingOption { get; set; }
     public bool AutoConfirmReservation { get; set; }
+    public Guid CreatedById { get; set; }
+    public Guid UpdatedById { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
