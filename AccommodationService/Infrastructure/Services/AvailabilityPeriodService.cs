@@ -22,6 +22,7 @@ public class AvailabilityPeriodService : IAvailabilityPeriodService
         {
             throw new Exception("The new availability period overlaps with an existing one.");
         }
+
         var createdAvailabilityPeriod = await availabilityPeriodRepository.AddAsync(availabilityPeriod);
         return createdAvailabilityPeriod;
     }
