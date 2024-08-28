@@ -42,15 +42,15 @@ public class ReservationService : IReservationService
         if (reservation.Status != ReservationStatus.Pending) throw new Exception("Reservation is already confirmed or canceled");
         if (DateOnly.FromDateTime(DateTime.Now) >= reservation.StartDate) throw new Exception("Reservation already started");
 
-        reservation.Status = ReservationStatus.Confirmed;
         var otherReservations = await reservationRepository.GetAllPendingCorrelated(reservation);
         foreach (var otherReservation in otherReservations)
         {
             otherReservation.Status = ReservationStatus.HostCancelled;
         }
-
-        reservationRepository.Update(reservation);
         reservationRepository.UpdateRange(otherReservations);
+
+        reservation.Status = ReservationStatus.Confirmed;
+        reservationRepository.Update(reservation);
     }
 
     public async Task<Reservation> CreateAsync(Reservation reservation)
@@ -89,6 +89,18 @@ public class ReservationService : IReservationService
             throw new Exception("You can only delete reservation request");
         }
         reservationRepository.Delete(reservation);
+    }
+
+    public async Task DeleteGuestReservationsAsync(Guid guestId)
+    {
+        var guestReservations = await reservationRepository.GetGuestReservationsAsync(guestId);
+
+        if (guestReservations.Any(r => r.Status == ReservationStatus.Confirmed && r.StartDate <= DateOnly.FromDateTime(DateTime.UtcNow) && r.EndDate >= DateOnly.FromDateTime(DateTime.UtcNow)))
+        {
+            throw new Exception("Can't delete account when having active reservation");
+        }
+
+        await reservationRepository.DeleteGuestReservationsAsync(guestId);
     }
 
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)

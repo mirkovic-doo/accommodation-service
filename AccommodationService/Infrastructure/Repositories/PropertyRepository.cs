@@ -12,7 +12,7 @@ public class PropertyRepository : BaseRepository<Property>, IBaseRepository<Prop
 
     public async Task<IEnumerable<Property>> GetMyAsync()
     {
-        return await dbContext.Properties.Where(p => p.CreatedById == dbContext.CurrentUserId).ToListAsync();
+        return await dbContext.Properties.Include(p => p.Reservations).Where(p => p.CreatedById == dbContext.CurrentUserId).ToListAsync();
     }
 
     public async Task<Property> GetMyByIdAsync(Guid id)

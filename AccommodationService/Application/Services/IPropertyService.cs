@@ -12,4 +12,5 @@ public interface IPropertyService
     Task<Property> UpdateAsync(PropertyRequest request);
     Task<IEnumerable<SearchPropertyResponse>> SearchPropertiesAsync(string location, int guests, DateOnly startDate, DateOnly endDate);
     Task<IEnumerable<Property>> GetMyAsync();
+    Task DeletePropertiesAsync();
 }
