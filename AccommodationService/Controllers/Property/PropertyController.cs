@@ -26,6 +26,7 @@ public class PropertyController : ControllerBase
         this.propertyService = propertyService;
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}", Name = nameof(GetProperty))]
     [ProducesResponseType(typeof(PropertyResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProperty([FromRoute] Guid id)
