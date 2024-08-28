@@ -75,6 +75,15 @@ public class PropertyController : ControllerBase
         return Ok(mapper.Map<List<PropertyResponse>>(properties));
     }
 
+    [Authorize(nameof(AuthorizationLevel.Host))]
+    [HttpDelete("host/delete/action", Name = nameof(DeleteHostProperties))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteHostProperties()
+    {
+        await propertyService.DeletePropertiesAsync();
+
+        return Ok();
+    }
 
     [AllowAnonymous]
     [HttpGet("search", Name = nameof(SearchProperties))]

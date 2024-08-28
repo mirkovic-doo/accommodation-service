@@ -14,6 +14,13 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
         this.dbContext = dbContext;
     }
 
+    public async Task DeleteGuestReservationsAsync(Guid guestId)
+    {
+        await dbContext.Reservations
+            .Where(r => r.CreatedById == guestId)
+            .ExecuteDeleteAsync();
+    }
+
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)
     {
         return await dbContext.Reservations.Where(r => r.PropertyId == propertyId).ToListAsync();

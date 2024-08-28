@@ -91,6 +91,18 @@ public class ReservationService : IReservationService
         reservationRepository.Delete(reservation);
     }
 
+    public async Task DeleteGuestReservationsAsync(Guid guestId)
+    {
+        var guestReservations = await reservationRepository.GetGuestReservationsAsync(guestId);
+
+        if (guestReservations.Any(r => r.Status == ReservationStatus.Confirmed && r.StartDate <= DateOnly.FromDateTime(DateTime.UtcNow) && r.EndDate >= DateOnly.FromDateTime(DateTime.UtcNow)))
+        {
+            throw new Exception("Can't delete account when having active reservation");
+        }
+
+        await reservationRepository.DeleteGuestReservationsAsync(guestId);
+    }
+
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)
     {
         var reservations = await reservationRepository.GetAllByPropertyIdAsync(propertyId);
