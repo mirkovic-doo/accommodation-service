@@ -35,7 +35,10 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
 
     public async Task<IEnumerable<Reservation>> GetAllByPropertyIdAsync(Guid propertyId)
     {
-        return await dbContext.Reservations.Where(r => r.PropertyId == propertyId).ToListAsync();
+        return await dbContext.Reservations
+            .Include(r => r.Property)
+            .Where(r => r.PropertyId == propertyId)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Reservation>> GetAllPendingCorrelated(Reservation reservation)
@@ -54,8 +57,7 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
     {
         return await dbContext.Reservations
             .Include(r => r.Property)
-            .Where(r => r.CreatedById == guestId &&
-            (r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.Confirmed))
+            .Where(r => r.CreatedById == guestId)
             .ToListAsync();
     }
 
@@ -64,5 +66,13 @@ public class ReservationRepository : BaseRepository<Reservation>, IBaseRepositor
         return await dbContext.Reservations
             .Where(r => r.CreatedById == guestId && r.Status == ReservationStatus.GuestCancelled)
             .CountAsync();
+    }
+
+    public async Task<IEnumerable<Reservation>> GetHostReservationsAsync(Guid hostId)
+    {
+        return await dbContext.Reservations
+            .Include(r => r.Property)
+            .Where(r => r.Property.CreatedById == hostId)
+            .ToListAsync();
     }
 }
