@@ -184,6 +184,11 @@ public class ReservationService : IReservationService
         return await reservationRepository.GetGuestReservationsAsync(guestId);
     }
 
+    public async Task<IEnumerable<Reservation>> GetHostReservationsAsync(Guid hostId)
+    {
+        return await reservationRepository.GetHostReservationsAsync(hostId);
+    }
+
     public async Task<int> GetNumberOfCancelledReservationsAsync(Guid guestId)
     {
         return await reservationRepository.GetNumberOfCancelledReservationsAsync(guestId);
