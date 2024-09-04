@@ -24,10 +24,12 @@ public class PropertyController : ControllerBase
 
     public PropertyController(
         IMapper mapper,
-        IPropertyService propertyService)
+        IPropertyService propertyService,
+        IAvailabilityPeriodService availabilityPeriodService)
     {
         this.mapper = mapper;
         this.propertyService = propertyService;
+        this.availabilityPeriodService = availabilityPeriodService;
     }
 
     [AllowAnonymous]
