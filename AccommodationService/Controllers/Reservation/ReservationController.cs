@@ -75,7 +75,7 @@ public class ReservationController : ControllerBase
         return Ok("Reservation canceled successfully");
     }
 
-    [Authorize(nameof(AuthorizationLevel.Guest))]
+    [Authorize(nameof(AuthorizationLevel.Host))]
     [HttpDelete("{id}/cancel/host", Name = nameof(CancelReservationHost))]
     [ProducesResponseType(typeof(OkObjectResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> CancelReservationHost([FromRoute] Guid id)
