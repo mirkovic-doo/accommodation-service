@@ -36,7 +36,7 @@ public class ReservationService : IReservationService
             EntityId = reservation.Id,
             ReceiverId = reservation.Property.CreatedById,
             SenderId = reservation.CreatedById,
-            Type = NotificationType.ReservationResponse
+            Type = NotificationType.ReservationCancelled,
         });
     }
 
@@ -54,7 +54,7 @@ public class ReservationService : IReservationService
             EntityId = reservation.Id,
             ReceiverId = reservation.CreatedById,
             SenderId = reservation.Property.CreatedById,
-            Type = NotificationType.ReservationResponse
+            Type = NotificationType.ReservationRejected,
         });
     }
 
@@ -78,7 +78,7 @@ public class ReservationService : IReservationService
                 EntityId = cancelledReservation.Id,
                 ReceiverId = cancelledReservation.CreatedById,
                 SenderId = cancelledReservation.Property.CreatedById,
-                Type = NotificationType.ReservationResponse
+                Type = NotificationType.ReservationRejected
             });
         }
 
@@ -90,7 +90,7 @@ public class ReservationService : IReservationService
             EntityId = reservation.Id,
             ReceiverId = reservation.CreatedById,
             SenderId = reservation.Property.CreatedById,
-            Type = NotificationType.ReservationResponse
+            Type = NotificationType.ReservationConfirmed
         });
     }
 
@@ -142,6 +142,14 @@ public class ReservationService : IReservationService
         {
             throw new Exception("You can only delete reservation request");
         }
+
+        notificationSenderService.Send(new NotificationPayload
+        {
+            EntityId = reservation.Id,
+            ReceiverId = reservation.Property.CreatedById,
+            SenderId = reservation.CreatedById,
+            Type = NotificationType.ReservationDeleted
+        });
         reservationRepository.Delete(reservation);
     }
 
@@ -161,7 +169,7 @@ public class ReservationService : IReservationService
                 EntityId = reservation.Id,
                 ReceiverId = reservation.Property.CreatedById,
                 SenderId = reservation.CreatedById,
-                Type = NotificationType.ReservationResponse
+                Type = NotificationType.ReservationDeleted
             });
         }
 
