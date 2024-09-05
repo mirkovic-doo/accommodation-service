@@ -65,4 +65,6 @@ public class AccommodationDbContext : DbContext
     }
 
     public DbSet<Property> Properties => Set<Property>();
+    public DbSet<AvailabilityPeriod> AvailabilityPeriods => Set<AvailabilityPeriod>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 }

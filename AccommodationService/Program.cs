@@ -1,12 +1,18 @@
 using AccommodationService.Application.Repositories;
 using AccommodationService.Application.Services;
+using AccommodationService.Authorization;
 using AccommodationService.Configuration;
 using AccommodationService.Infrastructure;
 using AccommodationService.Infrastructure.Repositories;
 using AccommodationService.Infrastructure.Services;
+using AccommodationService.Notification;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -40,6 +46,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
+builder.Host.UseSerilog((context, loggerConfig) =>
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
+
 var firebaseProjectId = builder.Configuration["FirebaseAuthClientConfig:ProjectId"];
 
 var tokenValidationParameters = new TokenValidationParameters
@@ -62,11 +71,17 @@ builder.Services
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<FirebaseAuthClientConfig>(builder.Configuration.GetSection("FirebaseAuthClientConfig"));
+builder.Services.Configure<RabbitMQConfig>(builder.Configuration.GetSection("RabbitMQConfig"));
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+if (!string.IsNullOrWhiteSpace(builder.Configuration.GetSection("ElasticApm").GetValue<string>("ServerCert")))
+{
+    builder.Services.AddAllElasticApm();
+}
 
 builder.Services.AddRouting(options =>
 {
@@ -76,8 +91,20 @@ builder.Services.AddRouting(options =>
 
 
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IAvailabilityPeriodService, AvailabilityPeriodService>();
 
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IAvailabilityPeriodRepository, AvailabilityPeriodRepository>();
+
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+
+builder.Services.AddScoped<IAuthorizationHandler, AuthorizationLevelAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+builder.Services.AddSingleton<INotificationSenderService, NotificationSenderService>();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
@@ -92,7 +119,8 @@ app.UseSwagger((opt) =>
     opt.RouteTemplate = "swagger/{documentName}/swagger.json";
 });
 app.UseSwaggerUI();
-
+app.UseMiddleware<RequestContextLoggingMiddleware>();
+app.UseSerilogRequestLogging();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 

@@ -22,7 +22,7 @@ namespace AccommodationService.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AccommodationService.Domain.Property", b =>
+            modelBuilder.Entity("AccommodationService.Domain.AvailabilityPeriod", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,9 +34,69 @@ namespace AccommodationService.Migrations
                     b.Property<Guid>("CreatedById")
                         .HasColumnType("uuid");
 
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("PricePerDay")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("AvailabilityPeriods");
+                });
+
+            modelBuilder.Entity("AccommodationService.Domain.Property", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string[]>("Amenities")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<bool>("AutoConfirmReservation")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("MaxGuests")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MinGuests")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string[]>("Photos")
+                        .HasColumnType("text[]");
+
+                    b.Property<int>("PricingOption")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -47,6 +107,78 @@ namespace AccommodationService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Properties");
+                });
+
+            modelBuilder.Entity("AccommodationService.Domain.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Guests")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("AccommodationService.Domain.AvailabilityPeriod", b =>
+                {
+                    b.HasOne("AccommodationService.Domain.Property", "Property")
+                        .WithMany("AvailabilityPeriods")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("AccommodationService.Domain.Reservation", b =>
+                {
+                    b.HasOne("AccommodationService.Domain.Property", "Property")
+                        .WithMany("Reservations")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("AccommodationService.Domain.Property", b =>
+                {
+                    b.Navigation("AvailabilityPeriods");
+
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }
