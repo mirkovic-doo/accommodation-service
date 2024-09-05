@@ -3,7 +3,9 @@
 public enum NotificationType
 {
     ReservationRequest = 1,
-    ReservationResponse = 2,
-    ReservationCancellation = 3,
-    ReviewRecieved = 4,
+    ReservationCancelled = 2,
+    ReservationConfirmed = 3,
+    ReservationRejected = 4,
+    ReservationDeleted = 5,
+    ReviewRecieved = 6,
 }
